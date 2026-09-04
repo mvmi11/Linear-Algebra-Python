@@ -1,47 +1,55 @@
 import numpy as np
-import sympy as sp
+import matplotlib.pyplot as plt
 
-def analyze_matrix():
-    print("\n--- 1. Linear Algebra Operations (NumPy) ---")
-    # تعريف مصفوفة 2x2 كمثال (يمكن تغيير الأرقام)
-    A = np.array([[4, 2],
-                  [1, 3]])
-    print(f"Matrix A:\n{A}")
-    
-    # حساب المحدد (Determinant)
-    det_A = np.linalg.det(A)
-    print(f"Determinant of A: {det_A:.2f}")
-    
-    # حساب القيم الذاتية والمتجهات الذاتية (Eigenvalues & Eigenvectors)
-    eigenvalues, eigenvectors = np.linalg.eig(A)
-    print(f"Eigenvalues: {eigenvalues}")
+# 1. Define the mathematical function (Cost Function)
+# f(x) = x^2 + 4x + 4  (A simple parabola)
+def function_f(x):
+    return x**2 + 4*x + 4
 
-def calculate_jacobian():
-    print("\n--- 2. Multivariable Calculus: Jacobian (SymPy) ---")
-    # تعريف المتغيرات الرمزية
-    r, theta = sp.symbols('r theta')
+# 2. Define the exact derivative (Calculus: f'(x) = 2x + 4)
+def derivative_f(x):
+    return 2*x + 4
+
+def gradient_descent(starting_x, learning_rate, iterations):
+    x_history = [starting_x]
+    y_history = [function_f(starting_x)]
     
-    # التحويل من الإحداثيات الكارتيزية إلى القطبية كدوال
-    # x = r * cos(theta), y = r * sin(theta)
-    x = r * sp.cos(theta)
-    y = r * sp.sin(theta)
-    
-    # حساب مصفوفة الجاكوبي لـ [x, y] بالنسبة لـ [r, theta]
-    functions = sp.Matrix([x, y])
-    variables = sp.Matrix([r, theta])
-    jacobian_matrix = functions.jacobian(variables)
-    
-    print("Jacobian Matrix (Polar Coordinates transformation):")
-    sp.pprint(jacobian_matrix)
-    
-    # حساب محدد الجاكوبي (الذي نستخدمه في التكامل الثنائي)
-    jacobian_det = jacobian_matrix.det()
-    print(f"Jacobian Determinant: {sp.simplify(jacobian_det)}")
+    x = starting_x
+    for i in range(iterations):
+        # Apply Calculus: move in the opposite direction of the gradient
+        gradient = derivative_f(x)
+        x = x - (learning_rate * gradient)
+        
+        x_history.append(x)
+        y_history.append(function_f(x))
+        
+    return x_history, y_history
 
 if __name__ == "__main__":
-    print("Executing Mathematical Framework Solver...")
-    analyze_matrix()
-    calculate_jacobian()
-pip install numpy sympy
-
-python main.py
+    print("🚀 Initializing Mathematical Optimization Solver...")
+    
+    # Hyperparameters
+    start_point = 4.0      # Starting at x = 4
+    learning_step = 0.1    # Step size
+    total_steps = 20       # Iterations
+    
+    # Run the algorithm
+    x_steps, y_steps = gradient_descent(start_point, learning_step, total_steps)
+    
+    print(f"✅ Optimization Complete!")
+    print(f"🎯 Global Minimum found near x = {x_steps[-1]:.4f}, f(x) = {y_steps[-1]:.4f}")
+    
+    # Visualizing the Calculus concept
+    x_vals = np.linspace(-6, 2, 100)
+    plt.plot(x_vals, function_f(x_vals), label='f(x) = x² + 4x + 4', color='blue')
+    plt.scatter(x_steps, y_steps, color='red', label='Gradient Descent Steps')
+    plt.plot(x_steps, y_steps, color='red', linestyle='dashed', alpha=0.5)
+    plt.title('Calculus in AI: Optimization Via Gradient Descent')
+    plt.xlabel('x')
+    plt.ylabel('f(x)')
+    plt.legend()
+    plt.grid(True)
+    
+    # Save the mathematical plot to push to GitHub
+    plt.savefig('optimization_plot.png')
+    print("📊 Plot saved successfully as 'optimization_plot.png'!")
