@@ -42,3 +42,6 @@ if __name__ == "__main__":
     print("Executing Mathematical Framework Solver...")
     analyze_matrix()
     calculate_jacobian()
+pip install numpy sympy
+
+python main.py
